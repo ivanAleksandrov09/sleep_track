@@ -4,6 +4,16 @@
 
 static Preferences prefs;
 
+static unsigned long scaleSleepTime(unsigned long elapsedMs)
+{
+#if DEBUG_MODE
+    unsigned long long scaled = (unsigned long long)elapsedMs * DEBUG_SLEEP_TIME_SCALE;
+    return scaled > 0xFFFFFFFFULL ? 0xFFFFFFFFUL : (unsigned long)scaled;
+#else
+    return elapsedMs;
+#endif
+}
+
 SleepTracker::SleepTracker()
     : _state(STATE_IDLE), _sleepStartMs(0), _confirmStartMs(0), _stoppedStartMs(0)
 {
@@ -47,7 +57,7 @@ void SleepTracker::stopSleep(float avgTemp, float avgHumidity)
     }
 
     // Second press (or confirm window still open): finalize
-    unsigned long durationMs = millis() - _sleepStartMs;
+    unsigned long durationMs = scaleSleepTime(millis() - _sleepStartMs);
     int score = calculateScore(durationMs, avgTemp, avgHumidity);
 
     SleepSession session;
@@ -77,7 +87,7 @@ unsigned long SleepTracker::getElapsedMs() const
 {
     if (_state == STATE_IDLE || _state == STATE_STOPPED)
         return 0;
-    return millis() - _sleepStartMs;
+    return scaleSleepTime(millis() - _sleepStartMs);
 }
 
 SleepPhase SleepTracker::getCurrentPhase() const

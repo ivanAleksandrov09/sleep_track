@@ -3,10 +3,13 @@
 
 DisplayManager::DisplayManager()
     : _display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1)
-{}
+{
+}
 
-bool DisplayManager::begin() {
-    if (!_display.begin(SSD1306_SWITCHCAPVCC, SCREEN_I2C_ADDR)) {
+bool DisplayManager::begin()
+{
+    if (!_display.begin(SSD1306_SWITCHCAPVCC, SCREEN_I2C_ADDR))
+    {
         return false;
     }
     _display.clearDisplay();
@@ -16,14 +19,24 @@ bool DisplayManager::begin() {
 
 // ─── Master render ────────────────────────────────────────────────────────────
 
-void DisplayManager::render(const DisplayData& data) {
+void DisplayManager::render(const DisplayData &data)
+{
     _display.clearDisplay();
 
-    switch (data.state) {
-        case STATE_IDLE:         _renderIdle(data);        break;
-        case STATE_TRACKING:     _renderTracking(data);    break;
-        case STATE_CONFIRM_STOP: _renderConfirmStop(data); break;
-        case STATE_STOPPED:      _renderStopped(data);     break;
+    switch (data.state)
+    {
+    case STATE_IDLE:
+        _renderIdle(data);
+        break;
+    case STATE_TRACKING:
+        _renderTracking(data);
+        break;
+    case STATE_CONFIRM_STOP:
+        _renderConfirmStop(data);
+        break;
+    case STATE_STOPPED:
+        _renderStopped(data);
+        break;
     }
 
     _display.display();
@@ -31,7 +44,8 @@ void DisplayManager::render(const DisplayData& data) {
 
 // ─── Screen layouts ───────────────────────────────────────────────────────────
 
-void DisplayManager::_renderIdle(const DisplayData& data) {
+void DisplayManager::_renderIdle(const DisplayData &data)
+{
     // Left half: history, Right half: current temp/humidity
     _drawHistory(data.history, 0, 0, 62, SCREEN_HEIGHT);
 
@@ -41,7 +55,8 @@ void DisplayManager::_renderIdle(const DisplayData& data) {
     _drawCurrentStats(data, 65, 0, SCREEN_WIDTH - 65, SCREEN_HEIGHT);
 }
 
-void DisplayManager::_renderTracking(const DisplayData& data) {
+void DisplayManager::_renderTracking(const DisplayData &data)
+{
     // Top: timer + phase
     _drawTimer(data.elapsedMs, 0, 0);
     _drawPhase(data.phaseName, 80, 0);
@@ -59,7 +74,8 @@ void DisplayManager::_renderTracking(const DisplayData& data) {
     _display.print(buf);
 }
 
-void DisplayManager::_renderConfirmStop(const DisplayData& data) {
+void DisplayManager::_renderConfirmStop(const DisplayData &data)
+{
     _display.setTextSize(1);
     _display.setTextColor(SSD1306_WHITE);
 
@@ -77,7 +93,8 @@ void DisplayManager::_renderConfirmStop(const DisplayData& data) {
     _display.println("confirm");
 }
 
-void DisplayManager::_renderStopped(const DisplayData& data) {
+void DisplayManager::_renderStopped(const DisplayData &data)
+{
     _display.setTextSize(1);
     _display.setTextColor(SSD1306_WHITE);
 
@@ -92,29 +109,33 @@ void DisplayManager::_renderStopped(const DisplayData& data) {
 
 // ─── Drawing helpers ──────────────────────────────────────────────────────────
 
-void DisplayManager::_drawHistory(const SleepSession* history, int x, int y, int w, int h) {
+void DisplayManager::_drawHistory(const SleepSession *history, int x, int y, int w, int h)
+{
     _display.setTextSize(1);
     _display.setTextColor(SSD1306_WHITE);
     _display.setCursor(x, y);
     _display.println("Nights:");
 
-    for (int i = 0; i < HISTORY_COUNT; i++) {
+    for (int i = 0; i < IDLE_HISTORY_DISPLAY_COUNT && i < HISTORY_COUNT; i++)
+    {
         int rowY = y + 10 + i * 13;
-        if (!history[i].valid) {
+        if (!history[i].valid)
+        {
             _display.setCursor(x, rowY);
             _display.println("--");
             continue;
         }
         char buf[16];
         snprintf(buf, sizeof(buf), "%dh %d/100",
-            (int)(history[i].durationMs / 3600000UL),
-            history[i].score);
+                 (int)(history[i].durationMs / 3600000UL),
+                 history[i].score);
         _display.setCursor(x, rowY);
         _display.print(buf);
     }
 }
 
-void DisplayManager::_drawCurrentStats(const DisplayData& data, int x, int y, int w, int h) {
+void DisplayManager::_drawCurrentStats(const DisplayData &data, int x, int y, int w, int h)
+{
     _display.setTextSize(1);
     _display.setTextColor(SSD1306_WHITE);
 
@@ -129,7 +150,8 @@ void DisplayManager::_drawCurrentStats(const DisplayData& data, int x, int y, in
     _display.print(buf);
 }
 
-void DisplayManager::_drawTimer(unsigned long ms, int x, int y) {
+void DisplayManager::_drawTimer(unsigned long ms, int x, int y)
+{
     char buf[12];
     _formatDuration(ms, buf, sizeof(buf));
     _display.setTextSize(1);
@@ -138,14 +160,16 @@ void DisplayManager::_drawTimer(unsigned long ms, int x, int y) {
     _display.print(buf);
 }
 
-void DisplayManager::_drawPhase(const char* phase, int x, int y) {
+void DisplayManager::_drawPhase(const char *phase, int x, int y)
+{
     _display.setTextSize(1);
     _display.setTextColor(SSD1306_WHITE);
     _display.setCursor(x, y);
     _display.print(phase);
 }
 
-void DisplayManager::_formatDuration(unsigned long ms, char* buf, size_t bufLen) {
+void DisplayManager::_formatDuration(unsigned long ms, char *buf, size_t bufLen)
+{
     unsigned long totalSec = ms / 1000;
     unsigned long h = totalSec / 3600;
     unsigned long m = (totalSec % 3600) / 60;

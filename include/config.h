@@ -16,6 +16,10 @@
 #define BTN_CONFIRM_WINDOW_MS 3000 // how long confirm prompt stays visible
 #define STOPPED_SCREEN_MS 3000     // how long the saved screen stays visible
 
+// --- Debug demo mode ---
+#define DEBUG_MODE 1
+#define DEBUG_SLEEP_TIME_SCALE 60UL // 1 real second becomes 1 minute of sleep time
+
 // --- DHT ---
 #define SENSOR_READ_INTERVAL_MS 2000
 
@@ -29,4 +33,5 @@
 
 // --- History ---
 #define HISTORY_COUNT 4
+#define IDLE_HISTORY_DISPLAY_COUNT 3
 #define PREFS_NAMESPACE "sleeptracker"
