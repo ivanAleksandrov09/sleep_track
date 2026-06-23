@@ -14,6 +14,7 @@
 // --- Button debounce ---
 #define BTN_DEBOUNCE_MS 250
 #define BTN_CONFIRM_WINDOW_MS 3000 // how long confirm prompt stays visible
+#define STOPPED_SCREEN_MS 3000     // how long the saved screen stays visible
 
 // --- DHT ---
 #define SENSOR_READ_INTERVAL_MS 2000
