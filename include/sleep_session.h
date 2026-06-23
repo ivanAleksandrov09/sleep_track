@@ -36,6 +36,7 @@ public:
     void begin();
     void update();
     void startSleep();
+    void resetSleepTimer();
     void stopSleep(float avgTemp, float avgHumidity);
     void cancelStop();
 

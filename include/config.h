@@ -18,7 +18,7 @@
 
 // --- Debug demo mode ---
 #define DEBUG_MODE 1
-#define DEBUG_SLEEP_TIME_SCALE 60UL // 1 real second becomes 1 minute of sleep time
+#define DEBUG_SLEEP_TIME_SCALE 240UL // 1 real second becomes 1 minute of sleep time
 
 // --- DHT ---
 #define SENSOR_READ_INTERVAL_MS 2000

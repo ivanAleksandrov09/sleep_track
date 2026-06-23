@@ -43,6 +43,14 @@ void SleepTracker::startSleep()
     _state = STATE_TRACKING;
 }
 
+void SleepTracker::resetSleepTimer()
+{
+    if (_state == STATE_TRACKING)
+    {
+        _sleepStartMs = millis();
+    }
+}
+
 void SleepTracker::stopSleep(float avgTemp, float avgHumidity)
 {
     if (_state != STATE_TRACKING && _state != STATE_CONFIRM_STOP)

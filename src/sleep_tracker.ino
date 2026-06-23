@@ -121,8 +121,8 @@ void onStopBeginPress()
 
 void onResetPress()
 {
-    // Cancel a pending confirm-stop
-    tracker.cancelStop();
+    // Only restart the running sleep timer; leave everything else untouched.
+    tracker.resetSleepTimer();
 }
 
 // If confirm window expires, cancel stop
